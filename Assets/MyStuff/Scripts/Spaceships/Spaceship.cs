@@ -7,8 +7,6 @@ public class Spaceship : MonoBehaviour
 {
     protected GameManager _gm;
     protected NavMeshAgent agent => GetComponent<NavMeshAgent>();
-
-    [SerializeField] private Vector3 _test;
     // Start is called before the first frame update
     protected void Start()
     {
