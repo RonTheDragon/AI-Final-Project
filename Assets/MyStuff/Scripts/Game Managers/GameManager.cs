@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public Transform Mine;
     public Vector2 MineralsExtraction;
     public Transform Factory;
+    public Transform PirateFreighter;
 
     private void Awake()
     {
@@ -24,5 +25,11 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public float AngleDifference(float angle1, float angle2)
+    {
+        float diff = (angle2 - angle1 + 180) % 360 - 180;
+        return diff < -180 ? diff + 360 : diff;
     }
 }

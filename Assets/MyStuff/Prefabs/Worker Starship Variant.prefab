@@ -219,6 +219,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3428796814460077345, guid: d261e6b9c361dee4a9e9d89bf6e9afe2, type: 3}
+      propertyPath: m_Speed
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3428796814460077347, guid: d261e6b9c361dee4a9e9d89bf6e9afe2, type: 3}
       propertyPath: m_Name
       value: Worker Starship Variant

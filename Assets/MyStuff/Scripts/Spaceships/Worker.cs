@@ -1,11 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class Worker : Spaceship
 {
-    private int _currency;
     public int Minerals;
+    private int _currency;
     private float _currentSpeed;
     private float _startingSpeed;
     private float _accelerationSpeed;
@@ -17,39 +16,53 @@ public class Worker : Spaceship
     private new void Start()
     {
         base.Start();
-        _startingSpeed = agent.speed;
+        _startingSpeed = _agent.speed;
         _currentSpeed = _startingSpeed;
-        _startingRotation = agent.angularSpeed;
-        _accelerationSpeed = agent.acceleration;
-        agent.SetDestination(_gm.Mine.position);
+        _startingRotation = _agent.angularSpeed;
+        _accelerationSpeed = _agent.acceleration;
+        _agent.SetDestination(_gm.Mine.position);
+        _currentState = Work;
     }
 
-    private void Update()
+    private void Work()
     {
-        if(Vector2.Distance(transform.position, agent.destination) < 1)
+        if (Vector2.Distance(transform.position, _agent.destination) < 1)
         {
-            agent.enabled = false;
-            agent.enabled = true;
+            _agent.enabled = false;
+            _agent.enabled = true;
             if (Minerals > 0)
             {
-                _currency += Minerals*40;
-                Minerals = 0;
-                _currentSpeed = _startingSpeed * (1 + _currency * 0.0001f);
-                agent.speed = _currentSpeed;
-                agent.acceleration = _accelerationSpeed * (1 + _currency * 0.001f);
-                agent.angularSpeed = _startingRotation * (1 + _currency * 0.01f);
-                agent.SetDestination(_gm.Mine.position);
-                _mineralOff.SetActive(true);
-                _mineralOn.SetActive(false);
+                SellMinerals();
             }
             else
             {
-                Minerals = (int)Random.Range(_gm.MineralsExtraction.x, _gm.MineralsExtraction.y);
-                agent.SetDestination(_gm.Factory.position);
-                agent.speed = _currentSpeed*0.5f;
-                _mineralOff.SetActive(false);
-                _mineralOn.SetActive(true);
+                MineMinerals();
             }
         }
     }
+
+    private void MineMinerals()
+    {
+        Minerals = (int)UnityEngine.Random.Range(_gm.MineralsExtraction.x, _gm.MineralsExtraction.y);
+        _agent.SetDestination(_gm.Factory.position);
+        _agent.speed = _currentSpeed * 0.5f;
+        _mineralOff.SetActive(false);
+        _mineralOn.SetActive(true);
+    }
+
+    private void SellMinerals()
+    {
+        _currency += Minerals * 40;
+        Minerals = 0;
+        _currentSpeed = _startingSpeed * (1 + _currency * 0.0001f);
+        _agent.speed = _currentSpeed;
+        _agent.acceleration = _accelerationSpeed * (1 + _currency * 0.001f);
+        _agent.angularSpeed = _startingRotation * (1 + _currency * 0.01f);
+        _agent.SetDestination(_gm.Mine.position);
+        _mineralOff.SetActive(true);
+        _mineralOn.SetActive(false);
+    }
+
+
+
 }
