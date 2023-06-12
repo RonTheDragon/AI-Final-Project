@@ -43,7 +43,16 @@ public class Pirate : Spaceship
 
     private void AttackState()
     {
-        _agent.SetDestination(_target.transform.position);
+        if (_target.Minerals>0)
+        {
+            // newPos is on the NavMesh, set it as the destination
+            _agent.SetDestination(_target.transform.position);
+        }
+        else
+        {
+            _target = null;
+            _currentState = RoamState;
+        }
     }
 
     private void FlyAroundRandomly()
@@ -67,20 +76,12 @@ public class Pirate : Spaceship
         }
 
         Vector3 newPos;
-        for (int i = 0; i < 50; i++)
-        {
-            float x = Random.Range(-_randomRoamRange, _randomRoamRange);
-            float y = Random.Range(-_randomRoamRange, _randomRoamRange);
-            newPos = new Vector3(transform.position.x+x,transform.position.y+y,transform.position.z);
-            NavMeshHit hit;
-            if (NavMesh.SamplePosition(newPos, out hit, 1.0f, NavMesh.AllAreas))
-            {
-                // newPos is on the NavMesh, set it as the destination
-                _agent.SetDestination(hit.position);
-                return;
-            }
-        }
-        Debug.Log($"{gameObject.name} is Stuck");
+        
+        float x = Random.Range(-_randomRoamRange, _randomRoamRange);
+        float y = Random.Range(-_randomRoamRange, _randomRoamRange);
+        newPos = new Vector3(transform.position.x+x,transform.position.y+y,transform.position.z);
+            
+        _agent.SetDestination(newPos);
     }
 
     private void Scan()
@@ -110,8 +111,9 @@ public class Pirate : Spaceship
 
     private bool CheckIfInFront(Vector2 target)
     {
-        float targetAngle = Mathf.Atan2(transform.position.y- target.y, transform.position.x-target.x)*Mathf.Rad2Deg+90;
-        float deltaAngleAIAndTarget = _gm.AngleDifference(targetAngle, -transform.eulerAngles.z);
+        float targetAngle = Mathf.Atan2(target.y - transform.position.y, target.x - transform.position.x) * Mathf.Rad2Deg +180;
+        float deltaAngleAIAndTarget = _gm.AngleDifference(targetAngle, transform.eulerAngles.x);
+        //Debug.Log($"{transform.eulerAngles.x} {targetAngle} = {deltaAngleAIAndTarget}");
         if (deltaAngleAIAndTarget < _angleOfVision / 2 && deltaAngleAIAndTarget > -_angleOfVision / 2)
         {
             return true;

@@ -169,3 +169,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _randomRoamRange: 5
   _homeSick: 25
+  _scanCooldown: 0.5
+  _scanRadius: 5
+  _minimumRob: 5
+  _angleOfVision: 20
