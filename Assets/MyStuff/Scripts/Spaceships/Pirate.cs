@@ -8,6 +8,7 @@ using UnityEngine.AI;
 public class Pirate : Spaceship
 {
     [Header("Roaming")]
+
     [SerializeField] private float _randomRoamRange = 5;
 
     [Tooltip("chance of deciding to go back to the Pirate Freighter")]
@@ -24,6 +25,20 @@ public class Pirate : Spaceship
 
     private Worker _target;
 
+    [SerializeField] private float _fixStuckAfter = 1;
+
+    private float _currentStuck;
+
+    [Header("Attacking")]
+
+    [SerializeField] private GameObject _projectile;
+    [SerializeField] private float _shootCooldown = 1;
+    private float _shootCD;
+
+    [Header("Icon")]
+
+    [SerializeField] private GameObject _AttackOn;
+    [SerializeField] private GameObject _AttackOff;
 
 
 
@@ -39,22 +54,30 @@ public class Pirate : Spaceship
     {
         FlyAroundRandomly();
         Scan();
+        FixStuck();
     }
 
     private void AttackState()
     {
+        if (_target == null) 
+        {
+            LoseTarget();
+            return; 
+        }
+
         if (_target.Minerals>0)
         {
             // newPos is on the NavMesh, set it as the destination
             _agent.SetDestination(_target.transform.position);
+            ShootingTarget();
         }
         else
         {
-            _target = null;
-            _currentState = RoamState;
+            LoseTarget();
         }
     }
 
+    #region Roam
     private void FlyAroundRandomly()
     {
         if (_agent.destination.IsUnityNull())
@@ -102,10 +125,26 @@ public class Pirate : Spaceship
                     {
                         _target = w;
                         _currentState = AttackState;
+                        _AttackOn.SetActive(true);
+                        _AttackOff.SetActive(false);
                         return;
                     }
                 }
             }
+        }
+    }
+
+    private void FixStuck()
+    {
+        if (_agent.velocity.magnitude < 1)
+        {
+            _currentStuck += Time.deltaTime;
+        }
+
+        if (_currentStuck> _fixStuckAfter)
+        {
+            _currentStuck = 0;
+            SetRandomDestination();
         }
     }
 
@@ -120,4 +159,27 @@ public class Pirate : Spaceship
         }
         return false;
     }
+    #endregion
+
+    #region Attack
+
+    private void LoseTarget()
+    {
+        _target = null;
+        _currentState = RoamState;
+        _AttackOn.SetActive(false);
+        _AttackOff.SetActive(true);
+    }
+
+    private void ShootingTarget()
+    {
+        if (_shootCD>0)
+        {
+            _shootCD -= Time.deltaTime; return;
+        }
+        _shootCD = _shootCooldown;
+        Instantiate(_projectile, transform.position, transform.rotation);
+    }
+
+    #endregion
 }

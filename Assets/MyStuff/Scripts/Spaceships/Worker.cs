@@ -10,6 +10,8 @@ public class Worker : Spaceship
     private float _accelerationSpeed;
     private float _startingRotation;
 
+
+    [Header("Icon")]
     [SerializeField] private GameObject _mineralOff;
     [SerializeField] private GameObject _mineralOn;
 
