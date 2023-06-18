@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+    public ObjectPooler OP => GetComponentInChildren<ObjectPooler>();
 
     public Transform Mine;
     public Vector2 MineralsExtraction;
