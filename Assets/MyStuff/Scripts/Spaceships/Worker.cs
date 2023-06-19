@@ -9,6 +9,7 @@ public class Worker : Spaceship
     private float _startingSpeed;
     private float _accelerationSpeed;
     private float _startingRotation;
+    private WorkerHealth _health => GetComponent<WorkerHealth>();
 
 
     [Header("Icon")]

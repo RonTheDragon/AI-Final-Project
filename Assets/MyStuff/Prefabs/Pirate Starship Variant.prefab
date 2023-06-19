@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 814701769532748589}
   - component: {fileID: 9036198911223589917}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: skull-crossed-bones
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2054994091033162508}
   - component: {fileID: 1215310857264897737}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: skull-crossed-bones (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -223,9 +223,21 @@ PrefabInstance:
       propertyPath: m_Speed
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 3428796814460077345, guid: d261e6b9c361dee4a9e9d89bf6e9afe2, type: 3}
+      propertyPath: m_AgentTypeID
+      value: -1372625422
+      objectReference: {fileID: 0}
     - target: {fileID: 3428796814460077347, guid: d261e6b9c361dee4a9e9d89bf6e9afe2, type: 3}
       propertyPath: m_Name
       value: Pirate Starship Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 3428796814460077347, guid: d261e6b9c361dee4a9e9d89bf6e9afe2, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3428796815360879598, guid: d261e6b9c361dee4a9e9d89bf6e9afe2, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d261e6b9c361dee4a9e9d89bf6e9afe2, type: 3}
@@ -252,13 +264,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _randomRoamRange: 5
+  _scanableLayers:
+    serializedVersion: 2
+    m_Bits: 64
   _homeSick: 25
   _scanCooldown: 0.5
   _scanRadius: 5
-  _minimumRob: 5
+  _minimumRob: 1
   _angleOfVision: 20
   _fixStuckAfter: 1
-  _projectile: {fileID: 753432290947482691, guid: 77f5c151b1a2a7e428178068322073ed, type: 3}
   _shootCooldown: 1
   _AttackOn: {fileID: 3002282833137454781}
   _AttackOff: {fileID: 2600654893131514168}

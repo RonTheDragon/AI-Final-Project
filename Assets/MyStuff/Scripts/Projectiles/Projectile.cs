@@ -8,10 +8,6 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float _speed;
     // Update is called once per frame
 
-    private void Start()
-    {
-        Destroy(gameObject,5);
-    }
 
     void Update()
     {

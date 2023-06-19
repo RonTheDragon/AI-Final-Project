@@ -10,6 +10,7 @@ public class Pirate : Spaceship
     [Header("Roaming")]
 
     [SerializeField] private float _randomRoamRange = 5;
+    [SerializeField] private LayerMask _scanableLayers;
 
     [Tooltip("chance of deciding to go back to the Pirate Freighter")]
     [Range(0f, 100f)]
@@ -31,7 +32,6 @@ public class Pirate : Spaceship
 
     [Header("Attacking")]
 
-    [SerializeField] private GameObject _projectile;
     [SerializeField] private float _shootCooldown = 1;
     private float _shootCD;
 
@@ -63,6 +63,12 @@ public class Pirate : Spaceship
         {
             LoseTarget();
             return; 
+        }
+
+        if (!_target.isActiveAndEnabled)
+        {
+            LoseTarget();
+            return;
         }
 
         if (_target.Minerals>0)
@@ -113,11 +119,10 @@ public class Pirate : Spaceship
         if (_scanCD > 0) { _scanCD -= Time.deltaTime; return; }
         _scanCD = _scanCooldown;
 
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _scanRadius);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _scanRadius, _scanableLayers);
         foreach (Collider2D collider in colliders)
         {
-            if (collider.transform.parent == null) break;
-            if (collider.transform.parent.TryGetComponent<Worker>(out Worker w))
+            if (collider.transform.TryGetComponent<Worker>(out Worker w))
             {
                 if (w.Minerals >= _minimumRob)
                 {
@@ -178,7 +183,7 @@ public class Pirate : Spaceship
             _shootCD -= Time.deltaTime; return;
         }
         _shootCD = _shootCooldown;
-        Instantiate(_projectile, transform.position, transform.rotation);
+        _gm.OP.SpawnFromPool("PirateShot", transform.position, transform.rotation,true);
     }
 
     #endregion

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,6 +13,12 @@ public class GameManager : MonoBehaviour
     public Transform Factory;
     public Transform PirateFreighter;
 
+    private float _currentSecond = 1;
+    public Action OnEverySecond;
+
+    public int WorkersAmount;
+    public int PiratesAmount;
+
     private void Awake()
     {
         Instance = this;
@@ -19,13 +26,38 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        OnEverySecond += Spawners;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        OneSecondLoop();
+    }
+
+    private void OneSecondLoop()
+    {
+        if (_currentSecond > 0) 
+        {
+            _currentSecond -=Time.deltaTime;
+            return; 
+        }
+        _currentSecond = 1;
+        OnEverySecond?.Invoke();
+    }
+
+    private void Spawners()
+    {
+        if (WorkersAmount > 0)
+        {
+            OP.SpawnFromPool("Worker",Factory.position,Quaternion.identity).GetComponent<WorkerHealth>().Spawn();
+            WorkersAmount--;
+        }
+        if (PiratesAmount > 0)
+        {
+            OP.SpawnFromPool("Pirate", PirateFreighter.position, Quaternion.identity);
+            PiratesAmount--;
+        }
     }
 
     public float AngleDifference(float angle1, float angle2)

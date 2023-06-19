@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5068772709608185720}
   - component: {fileID: 3207373083875495554}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: minerals on
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3880082023861210391}
   - component: {fileID: 6435500761585440470}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: minerals off
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -227,7 +227,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Worker Starship Variant
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 3428796814460077347, guid: d261e6b9c361dee4a9e9d89bf6e9afe2, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3428796815360879598, guid: d261e6b9c361dee4a9e9d89bf6e9afe2, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 269021929617762938, guid: d261e6b9c361dee4a9e9d89bf6e9afe2, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: d261e6b9c361dee4a9e9d89bf6e9afe2, type: 3}
 --- !u!1 &6006609078206261099 stripped
 GameObject:
@@ -249,6 +258,20 @@ MonoBehaviour:
   Minerals: 0
   _mineralOff: {fileID: 1700307559122349569}
   _mineralOn: {fileID: 1245193785597896534}
+--- !u!114 &2439567479800240141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6006609078206261099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3565044f5e315b048b6c6d2ef011977b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxHealth: 100
+  _currentHealth: 0
 --- !u!4 &6006609078379334055 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3428796815360879599, guid: d261e6b9c361dee4a9e9d89bf6e9afe2, type: 3}

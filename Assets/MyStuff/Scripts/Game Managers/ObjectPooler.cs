@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class ObjectPooler : MonoBehaviour
@@ -27,7 +28,7 @@ public class ObjectPooler : MonoBehaviour
         }
     }
 
-    public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation)
+    public GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation, bool despawnExisting = false)
     {
         if (!_poolDictionary.ContainsKey(tag))
         {
@@ -36,6 +37,28 @@ public class ObjectPooler : MonoBehaviour
         }
 
         GameObject objectToSpawn = _poolDictionary[tag].Dequeue();
+
+        if (!despawnExisting)
+        {
+            for (int i = 0; i < _poolDictionary[tag].Count; i++)
+            {
+                if (objectToSpawn.activeSelf)
+                {
+                    _poolDictionary[tag].Enqueue(objectToSpawn);
+                    objectToSpawn = _poolDictionary[tag].Dequeue();
+                }
+                else
+                {
+                    break;
+                }
+                if (i == _poolDictionary[tag].Count)
+                {
+                    Debug.LogError($"Not Enough {tag} in pool");
+                    return null;
+                }
+            }
+        }
+
         objectToSpawn.SetActive(true);
         objectToSpawn.transform.position = position;
         objectToSpawn.transform.rotation = rotation;
