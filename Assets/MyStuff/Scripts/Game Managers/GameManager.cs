@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public Vector2 MineralsExtraction;
     public Transform Factory;
     public Transform PirateFreighter;
+    public Transform PoliceStation;
 
     private float _currentSecond = 1;
     public Action OnEverySecond;
@@ -58,6 +59,11 @@ public class GameManager : MonoBehaviour
             OP.SpawnFromPool("Pirate", PirateFreighter.position, Quaternion.identity);
             PiratesAmount--;
         }
+    }
+
+    public void CallThePoliceToLocation(Vector3 location)
+    {
+
     }
 
     public float AngleDifference(float angle1, float angle2)

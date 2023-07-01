@@ -1,10 +1,13 @@
 using System;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class Spaceship : MonoBehaviour
 {
     protected GameManager _gm;
+    protected Transform _attacker;
+    [SerializeField] private float runAwayDistance = 20f; // Maximum distance to check for a safe direction
     protected NavMeshAgent _agent => GetComponent<NavMeshAgent>();
 
     protected Action _currentState;
@@ -51,5 +54,57 @@ public class Spaceship : MonoBehaviour
         }
 
         return farthestDirection;
+    }
+
+    public void RunAwayFromAttacker()
+    {
+        if (_attacker == null)
+        {
+            return;
+        }
+
+        if (_agent.remainingDistance <= _agent.stoppingDistance)
+        {
+            // Worker has reached or is very close to the current destination
+
+            // Check the current agent velocity
+            if (_agent.velocity.magnitude < 0.1f)
+            {
+                // If the velocity is too low, force pick "run to a random direction"
+                RunToRandomDirection();
+            }
+            else
+            {
+                // Randomly pick between "run away to the opposite direction" and "run to a random direction"
+                int randomIndex = UnityEngine.Random.Range(0, 3);
+                if (randomIndex < 2)
+                {
+                    RunToOppositeDirection();
+                }
+                else
+                {
+                    RunToRandomDirection();
+                }
+            }
+        }
+    }
+
+    private void RunToOppositeDirection()
+    {
+        Vector2 attackerDirection = (_attacker.position - transform.position).normalized;
+        Vector2 oppositeDirection = -attackerDirection;
+        Vector2 destination = (Vector2)transform.position + oppositeDirection * runAwayDistance;
+
+        _agent.SetDestination(destination);
+
+    }
+
+    private void RunToRandomDirection()
+    {
+        Vector2 randomDirection = UnityEngine.Random.insideUnitCircle.normalized;
+        Vector2 destination = (Vector2)transform.position + randomDirection * runAwayDistance;
+
+        _agent.SetDestination(destination);
+
     }
 }

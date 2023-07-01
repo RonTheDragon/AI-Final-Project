@@ -18,7 +18,7 @@ public abstract class Health : MonoBehaviour
         Spawn();
     }
 
-    public void Spawn()
+    public virtual void Spawn()
     {
         _isAlive = true;
         _currentHealth = _maxHealth;

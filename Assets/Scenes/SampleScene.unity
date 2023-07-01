@@ -687,8 +687,9 @@ MonoBehaviour:
   MineralsExtraction: {x: 5, y: 10}
   Factory: {fileID: 461577680}
   PirateFreighter: {fileID: 643251527}
+  PoliceStation: {fileID: 1104663669}
   WorkersAmount: 20
-  PiratesAmount: 20
+  PiratesAmount: 10
 --- !u!1 &501725459
 GameObject:
   m_ObjectHideFlags: 0

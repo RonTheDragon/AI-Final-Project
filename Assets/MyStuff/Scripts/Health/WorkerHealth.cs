@@ -10,7 +10,13 @@ public class WorkerHealth : SpaceshipHealth
     private new void Start()
     {
         base.Start();
+        OnTakeDamage += _worker.Panic;
+    }
 
+    public override void Spawn()
+    {
+        base.Spawn();
+        _worker.Spawn();
     }
 
     protected override void Death()

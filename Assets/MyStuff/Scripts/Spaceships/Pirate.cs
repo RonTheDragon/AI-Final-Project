@@ -30,13 +30,9 @@ public class Pirate : Spaceship
 
     private float _currentStuck;
 
-    [Header("Attacking")]
+    PirateAttackSystem _attackSystem => GetComponent<PirateAttackSystem>();
 
-    [SerializeField] private string _currentAmmo = "PirateShot";
-    [SerializeField] private float _attackDamage = 50;
-    [SerializeField] private float _shootCooldown = 1;
-    private float _shootCD;
-    [SerializeField] private LayerMask _attackableLayers;
+    
 
     [Header("Icon")]
 
@@ -78,7 +74,7 @@ public class Pirate : Spaceship
         {
             // newPos is on the NavMesh, set it as the destination
             _agent.SetDestination(_target.transform.position);
-            ShootingTarget();
+            _attackSystem.ShootingTarget();
         }
         else
         {
@@ -177,17 +173,6 @@ public class Pirate : Spaceship
         _currentState = RoamState;
         _AttackOn.SetActive(false);
         _AttackOff.SetActive(true);
-    }
-
-    private void ShootingTarget()
-    {
-        if (_shootCD>0)
-        {
-            _shootCD -= Time.deltaTime; return;
-        }
-        _shootCD = _shootCooldown;
-        _gm.OP.SpawnFromPool(_currentAmmo, transform.position, transform.rotation,true)
-            .GetComponent<ProjectileDamage>().SetDamage(_attackDamage, transform,_attackableLayers);
     }
 
     #endregion

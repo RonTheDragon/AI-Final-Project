@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Worker : Spaceship
 {
@@ -9,24 +10,27 @@ public class Worker : Spaceship
     private float _startingSpeed;
     private float _accelerationSpeed;
     private float _startingRotation;
-    private WorkerHealth _health => GetComponent<WorkerHealth>();
 
+    [Header("Panic")]
+    [SerializeField] private float _panicDuration = 10;
+    private float _panicTimeLeft;
+    [SerializeField] private float _callThePoliceCooldown = 5;
+    private float _callThePoliceCD;
+    [SerializeField] private float _panicSpeedMult = 2f;
 
     [Header("Icon")]
     [SerializeField] private GameObject _mineralOff;
     [SerializeField] private GameObject _mineralOn;
+    [SerializeField] private GameObject _underAttack;
 
     private new void Start()
     {
         base.Start();
         _startingSpeed = _agent.speed;
-        _currentSpeed = _startingSpeed;
-        _startingRotation = _agent.angularSpeed;
-        _accelerationSpeed = _agent.acceleration;
-        _agent.SetDestination(_gm.Mine.position);
-        _currentState = WorkState;
+        Spawn();
     }
 
+    #region States
     private void WorkState()
     {
         if (Vector2.Distance(transform.position, _agent.destination) < 1)
@@ -43,6 +47,32 @@ public class Worker : Spaceship
             }
         }
     }
+
+    private void PanicState()
+    {
+        if (_attacker == null)
+        {
+            StopPanic();
+            return;
+        }
+
+        if (_callThePoliceCD > 0)
+        {
+            _callThePoliceCD -= Time.deltaTime;
+        }
+
+        if (_panicTimeLeft > 0)
+        {
+            _panicTimeLeft -= Time.deltaTime;
+        }
+        else
+        {
+            StopPanic();
+            return;
+        }
+        RunAwayFromAttacker();
+    }
+    #endregion
 
     private void MineMinerals()
     {
@@ -66,14 +96,41 @@ public class Worker : Spaceship
         _mineralOn.SetActive(false);
     }
 
-    private void Panic(Transform Attacker)
+    public void Panic(Transform attacker)
     {
-
+        _attacker = attacker;
+        _panicTimeLeft = _panicDuration;
+        _currentState = PanicState;
+        _underAttack.SetActive(true);
+        _agent.speed = _currentSpeed * _panicSpeedMult;
+        if (_callThePoliceCD <= 0) { CallThePolice(); _callThePoliceCD = _callThePoliceCooldown; }
     }
 
     private void CallThePolice()
     {
+        if (_attacker == null)
+        {
+            return; 
+        }
+        _gm.CallThePoliceToLocation(_attacker.transform.position);
+    }
 
+
+    private void StopPanic()
+    {
+        _attacker = null;
+        _underAttack.SetActive(false);
+        _currentState = WorkState;
+    }
+
+    public void Spawn()
+    {
+        StopPanic(); 
+        _gm = GameManager.Instance;
+        _currentSpeed = _startingSpeed;
+        _startingRotation = _agent.angularSpeed;
+        _accelerationSpeed = _agent.acceleration;
+        _agent.SetDestination(_gm.Mine.position);
     }
 
 }

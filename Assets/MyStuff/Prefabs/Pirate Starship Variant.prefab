@@ -263,6 +263,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2e726ba583ddfe4991c4849c21f2dd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  runAwayDistance: 20
   _randomRoamRange: 5
   _scanableLayers:
     serializedVersion: 2
@@ -273,11 +274,23 @@ MonoBehaviour:
   _minimumRob: 1
   _angleOfVision: 20
   _fixStuckAfter: 1
+  _AttackOn: {fileID: 3002282833137454781}
+  _AttackOff: {fileID: 2600654893131514168}
+--- !u!114 &2600760294434676062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7347248361768247123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9193af5202763c4a8890f4032e3a341, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   _currentAmmo: PirateShot
   _attackDamage: 50
   _shootCooldown: 1
   _attackableLayers:
     serializedVersion: 2
     m_Bits: 320
-  _AttackOn: {fileID: 3002282833137454781}
-  _AttackOff: {fileID: 2600654893131514168}
