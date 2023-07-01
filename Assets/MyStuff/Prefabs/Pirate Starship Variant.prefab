@@ -273,6 +273,11 @@ MonoBehaviour:
   _minimumRob: 1
   _angleOfVision: 20
   _fixStuckAfter: 1
+  _currentAmmo: PirateShot
+  _attackDamage: 50
   _shootCooldown: 1
+  _attackableLayers:
+    serializedVersion: 2
+    m_Bits: 320
   _AttackOn: {fileID: 3002282833137454781}
   _AttackOff: {fileID: 2600654893131514168}

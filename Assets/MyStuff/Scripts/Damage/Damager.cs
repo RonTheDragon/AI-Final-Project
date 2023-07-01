@@ -4,11 +4,14 @@ using UnityEngine;
 
 public abstract class Damager : MonoBehaviour
 {
-    [SerializeField] protected LayerMask _attackableLayers;
-    [SerializeField] protected float _currentDamage;
+    protected Transform _attacker;
+    protected LayerMask _attackableLayers;
+    protected float _currentDamage;
 
-    private void SetDamage(float damage)
+    public void SetDamage(float damage,Transform _attacker, LayerMask _attackableLayers)
     {
         _currentDamage = damage;
+        this._attacker = _attacker;
+        this._attackableLayers = _attackableLayers;
     }
 }

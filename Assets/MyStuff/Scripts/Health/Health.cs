@@ -9,10 +9,10 @@ public abstract class Health : MonoBehaviour
     [SerializeField] protected float _maxHealth;
     [SerializeField] protected float _currentHealth;
     protected GameManager _gm;
-    public Action OnTakeDamage;
+    public Action<Transform> OnTakeDamage;
 
     // Start is called before the first frame update
-    protected void Start()
+    protected virtual void Start()
     {
         _gm = GameManager.Instance;
         Spawn();
@@ -24,12 +24,12 @@ public abstract class Health : MonoBehaviour
         _currentHealth = _maxHealth;
     }
 
-    public virtual void TakeDamage(float damage)
+    public virtual void TakeDamage(float damage,Transform Attacker)
     {
         if (!_isAlive) 
             return;
 
-        OnTakeDamage?.Invoke();
+        OnTakeDamage?.Invoke(Attacker);
         _currentHealth -= damage;
         if (_currentHealth <= 0) 
         { 

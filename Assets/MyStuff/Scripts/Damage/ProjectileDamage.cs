@@ -10,7 +10,7 @@ public class ProjectileDamage : Damager
         {
             if (collision.transform.TryGetComponent<Health>(out Health health))
             {
-                health.TakeDamage(_currentDamage);
+                health.TakeDamage(_currentDamage,_attacker);
                 gameObject.SetActive(false);
             }
         }

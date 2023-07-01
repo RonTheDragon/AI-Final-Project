@@ -24,10 +24,10 @@ public class Worker : Spaceship
         _startingRotation = _agent.angularSpeed;
         _accelerationSpeed = _agent.acceleration;
         _agent.SetDestination(_gm.Mine.position);
-        _currentState = Work;
+        _currentState = WorkState;
     }
 
-    private void Work()
+    private void WorkState()
     {
         if (Vector2.Distance(transform.position, _agent.destination) < 1)
         {
@@ -66,6 +66,14 @@ public class Worker : Spaceship
         _mineralOn.SetActive(false);
     }
 
+    private void Panic(Transform Attacker)
+    {
 
+    }
+
+    private void CallThePolice()
+    {
+
+    }
 
 }
