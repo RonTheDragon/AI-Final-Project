@@ -205,11 +205,14 @@ public abstract class Spaceship : MonoBehaviour
     {
         _currency = 0;
         _speedLVL = 1;
-        _currentSpeed = _startingSpeed;
-        _rotationSpeed = _startingRot;
-        _accelerationSpeed = _startingAccel;
-        _agent.speed = _currentSpeed;
-        _agent.angularSpeed = _rotationSpeed;
-        _agent.acceleration = _accelerationSpeed;
+        if (_startingSpeed > 0)
+        {
+            _currentSpeed = _startingSpeed;
+            _rotationSpeed = _startingRot;
+            _accelerationSpeed = _startingAccel;
+            _agent.speed = _currentSpeed;
+            _agent.angularSpeed = _rotationSpeed;
+            _agent.acceleration = _accelerationSpeed;
+        }
     }
 }
