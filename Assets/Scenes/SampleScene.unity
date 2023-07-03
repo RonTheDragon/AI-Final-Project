@@ -594,7 +594,10 @@ MonoBehaviour:
   - GroupName: Shots
     Pools:
     - Tag: PirateShot
-      Prefab: {fileID: 753432290947482691, guid: 77f5c151b1a2a7e428178068322073ed, type: 3}
+      Prefab: {fileID: 6754354358574472306, guid: 367361e86b5a97f4d853417baa05254d, type: 3}
+      Size: 100
+    - Tag: CopShot
+      Prefab: {fileID: 295211086103358715, guid: 9e4110d548e511348b4dd04700bccd52, type: 3}
       Size: 100
   - GroupName: Spaceships
     Pools:
@@ -603,6 +606,9 @@ MonoBehaviour:
       Size: 20
     - Tag: Pirate
       Prefab: {fileID: 7347248361768247123, guid: 2114efb4df8ce874eb0564428fcb3644, type: 3}
+      Size: 20
+    - Tag: Cop
+      Prefab: {fileID: 8523339932323918097, guid: 2ab0b63585f8c5a4b856e0d9689c5bad, type: 3}
       Size: 20
 --- !u!1 &461577679
 GameObject:
@@ -668,6 +674,7 @@ Transform:
   - {fileID: 416126653}
   - {fileID: 2086808489}
   - {fileID: 501725460}
+  - {fileID: 1419349821}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1301,6 +1308,85 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1419349820
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1419349821}
+  - component: {fileID: 1419349823}
+  - component: {fileID: 1419349822}
+  m_Layer: 0
+  m_Name: Navigation Cops
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1419349821
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1419349820}
+  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 1.0420431, y: -0.7604303, z: 7.4099536}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 499800306}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1419349822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1419349820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70bd44a44cd62c64fbfc1eea95b24880, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideByGrid: 0
+  m_UseMeshPrefab: {fileID: 0}
+  m_CompressBounds: 0
+  m_OverrideVector: {x: 1, y: 1, z: 1}
+--- !u!114 &1419349823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1419349820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e04976799df50f54ba128eff723155a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AgentTypeID: -334000983
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_BuildHeightMesh: 0
+  m_HideEditorLogs: 0
+  m_NavMeshData: {fileID: 23800000, guid: 54d5f07d9ecd4d249a09f539796eca00, type: 2}
 --- !u!1 &1470729567
 GameObject:
   m_ObjectHideFlags: 0

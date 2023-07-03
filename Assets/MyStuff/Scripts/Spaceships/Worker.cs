@@ -4,12 +4,8 @@ using UnityEngine.AI;
 
 public class Worker : Spaceship
 {
-    public int Minerals;
-    private int _currency;
-    private float _currentSpeed;
-    private float _startingSpeed;
-    private float _accelerationSpeed;
-    private float _startingRotation;
+    private int _minerals;
+    
 
     [Header("Panic")]
     [SerializeField] private float _panicDuration = 10;
@@ -27,6 +23,8 @@ public class Worker : Spaceship
     {
         base.Start();
         _startingSpeed = _agent.speed;
+        _startingAccel = _agent.acceleration;
+        _startingRot = _agent.angularSpeed;
         Spawn();
     }
 
@@ -37,7 +35,7 @@ public class Worker : Spaceship
         {
             _agent.enabled = false;
             _agent.enabled = true;
-            if (Minerals > 0)
+            if (_minerals > 0)
             {
                 SellMinerals();
             }
@@ -76,7 +74,7 @@ public class Worker : Spaceship
 
     private void MineMinerals()
     {
-        Minerals = (int)UnityEngine.Random.Range(_gm.MineralsExtraction.x, _gm.MineralsExtraction.y);
+        _minerals = (int)UnityEngine.Random.Range(_gm.MineralsExtraction.x, _gm.MineralsExtraction.y);
         _agent.SetDestination(_gm.Factory.position);
         _agent.speed = _currentSpeed * 0.5f;
         _mineralOff.SetActive(false);
@@ -85,16 +83,22 @@ public class Worker : Spaceship
 
     private void SellMinerals()
     {
-        _currency += Minerals * 40;
-        Minerals = 0;
-        _currentSpeed = _startingSpeed * (1 + _currency * 0.0001f);
+        _currency += _minerals * 40;
+        _minerals = 0;
+        WorkerShop();
         _agent.speed = _currentSpeed;
-        _agent.acceleration = _accelerationSpeed * (1 + _currency * 0.001f);
-        _agent.angularSpeed = _startingRotation * (1 + _currency * 0.01f);
         _agent.SetDestination(_gm.Mine.position);
         _mineralOff.SetActive(true);
         _mineralOn.SetActive(false);
     }
+
+    private void WorkerShop()
+    {
+        _health.Heal();
+        BuySpeed();
+    }
+
+    
 
     public void Panic(Transform attacker)
     {
@@ -102,7 +106,7 @@ public class Worker : Spaceship
         _panicTimeLeft = _panicDuration;
         _currentState = PanicState;
         _underAttack.SetActive(true);
-        _agent.speed = _currentSpeed * _panicSpeedMult;
+        _agent.speed = _currentSpeed  * (_minerals > 0 ? 0.5f : 1) * _panicSpeedMult;
         if (_callThePoliceCD <= 0) { CallThePolice(); _callThePoliceCD = _callThePoliceCooldown; }
     }
 
@@ -123,14 +127,18 @@ public class Worker : Spaceship
         _currentState = WorkState;
     }
 
-    public void Spawn()
+    public override void Spawn()
     {
+        base.Spawn();
         StopPanic(); 
         _gm = GameManager.Instance;
-        _currentSpeed = _startingSpeed;
-        _startingRotation = _agent.angularSpeed;
-        _accelerationSpeed = _agent.acceleration;
+        _minerals = 0;
         _agent.SetDestination(_gm.Mine.position);
+    }
+
+    public int GetMinerals()
+    {
+        return _minerals;
     }
 
 }

@@ -24,4 +24,21 @@ public class WorkerHealth : SpaceshipHealth
         base.Death();
         _gm.WorkersAmount++;
     }
+
+    public override void TakeDamage(float damage, Transform Attacker)
+    {
+        if (!_isAlive)
+            return;
+
+        OnTakeDamage?.Invoke(Attacker);
+        _currentHealth -= damage;
+        if (_currentHealth <= 0)
+        {
+            if(Attacker.TryGetComponent<Pirate>(out Pirate p))
+            {
+                p.StealMinerals(_worker.GetMinerals());
+            }
+            Death();
+        }
+    }
 }

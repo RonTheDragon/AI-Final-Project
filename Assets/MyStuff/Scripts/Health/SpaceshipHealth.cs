@@ -9,4 +9,9 @@ public abstract class SpaceshipHealth : Health
         base.Death();
         gameObject.SetActive(false);
     }
+
+    public void Heal()
+    {
+        _currentHealth = _maxHealth;
+    }
 }

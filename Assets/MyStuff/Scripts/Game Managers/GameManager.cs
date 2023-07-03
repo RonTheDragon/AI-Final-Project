@@ -56,14 +56,14 @@ public class GameManager : MonoBehaviour
         }
         if (PiratesAmount > 0)
         {
-            OP.SpawnFromPool("Pirate", PirateFreighter.position, Quaternion.identity);
+            OP.SpawnFromPool("Pirate", PirateFreighter.position, Quaternion.identity).GetComponent<PirateHealth>().Spawn(); ;
             PiratesAmount--;
         }
     }
 
     public void CallThePoliceToLocation(Vector3 location)
     {
-
+        OP.SpawnFromPool("Cop", PoliceStation.position, Quaternion.identity).GetComponent<CopHealth>().Spawn(location);
     }
 
     public float AngleDifference(float angle1, float angle2)

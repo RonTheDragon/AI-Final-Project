@@ -7,28 +7,17 @@ using UnityEngine.AI;
 
 public class Pirate : Spaceship
 {
-    [Header("Roaming")]
-
-    [SerializeField] private float _randomRoamRange = 5;
-    [SerializeField] private LayerMask _scanableLayers;
 
     [Tooltip("chance of deciding to go back to the Pirate Freighter")]
     [Range(0f, 100f)]
     [SerializeField] private float _homeSick = 20f;
 
-    [SerializeField] private float _scanCooldown = 0.5f;
-    private float _scanCD;
-    [SerializeField] private float _scanRadius = 5;
-
     [SerializeField] private float _minimumRob = 5;
 
-    [SerializeField] private float _angleOfVision = 50;
+    private bool _untargetable;
 
-    private Worker _target;
-
-    [SerializeField] private float _fixStuckAfter = 1;
-
-    private float _currentStuck;
+    private int _stolenMinerals;
+    
 
     PirateAttackSystem _attackSystem => GetComponent<PirateAttackSystem>();
 
@@ -45,8 +34,11 @@ public class Pirate : Spaceship
     private new void Start()
     {
         base.Start();
-
+        _startingSpeed = _agent.speed;
+        _startingAccel = _agent.acceleration;
+        _startingRot = _agent.angularSpeed;
         _currentState = RoamState;
+        Spawn();
     }
 
     private void RoamState()
@@ -70,7 +62,7 @@ public class Pirate : Spaceship
             return;
         }
 
-        if (_target.Minerals>0)
+        if ((_target as Worker).GetMinerals()>0)
         {
             // newPos is on the NavMesh, set it as the destination
             _agent.SetDestination(_target.transform.position);
@@ -83,7 +75,24 @@ public class Pirate : Spaceship
     }
 
     #region Roam
-    private void FlyAroundRandomly()
+    protected override void SetRandomDestination()
+    {
+        if (_homeSick >= UnityEngine.Random.Range(0, 100))
+        {
+            _agent.SetDestination(_gm.PirateFreighter.transform.position);
+            return;
+        }
+
+        Vector3 newPos;
+
+        float x = UnityEngine.Random.Range(-_randomRoamRange, _randomRoamRange);
+        float y = UnityEngine.Random.Range(-_randomRoamRange, _randomRoamRange);
+        newPos = new Vector3(transform.position.x + x, transform.position.y + y, transform.position.z);
+
+        _agent.SetDestination(newPos);
+    }
+
+    protected override void FlyAroundRandomly()
     {
         if (_agent.destination.IsUnityNull())
         {
@@ -92,38 +101,35 @@ public class Pirate : Spaceship
         else if (Vector2.Distance(transform.position, _agent.destination) < 1)
         {
             SetRandomDestination();
+            if (Vector3.Distance(_agent.destination, _gm.PirateFreighter.position) < 0.5f)
+            {
+                PirateShop();
+            }
         }
     }
 
-    private void SetRandomDestination()
+    private void PirateShop()
     {
-        if (_homeSick >= Random.Range(0,100))
-        {
-            _agent.SetDestination(_gm.PirateFreighter.transform.position);
-            return;
-        }
+        _untargetable = true;
+        _health.Heal();
+        _currency += _stolenMinerals * 40;
+        _stolenMinerals = 0;
 
-        Vector3 newPos;
-        
-        float x = Random.Range(-_randomRoamRange, _randomRoamRange);
-        float y = Random.Range(-_randomRoamRange, _randomRoamRange);
-        newPos = new Vector3(transform.position.x+x,transform.position.y+y,transform.position.z);
-            
-        _agent.SetDestination(newPos);
+
     }
 
-    private void Scan()
+    protected override void Scan()
     {
         // Timer
-        if (_scanCD > 0) { _scanCD -= Time.deltaTime; return; }
-        _scanCD = _scanCooldown;
+        base.Scan();
+        if (_scanCD > 0) return;
 
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _scanRadius, _scanableLayers);
         foreach (Collider2D collider in colliders)
         {
             if (collider.transform.TryGetComponent<Worker>(out Worker w))
             {
-                if (w.Minerals >= _minimumRob)
+                if (w.GetMinerals() >= _minimumRob)
                 {
                     if (CheckIfInFront(new Vector2(w.transform.position.x, w.transform.position.y)))
                     {
@@ -131,6 +137,7 @@ public class Pirate : Spaceship
                         _currentState = AttackState;
                         _AttackOn.SetActive(true);
                         _AttackOff.SetActive(false);
+                        _untargetable = false;
                         return;
                     }
                 }
@@ -138,34 +145,11 @@ public class Pirate : Spaceship
         }
     }
 
-    private void FixStuck()
-    {
-        if (_agent.velocity.magnitude < 1)
-        {
-            _currentStuck += Time.deltaTime;
-        }
+    
 
-        if (_currentStuck> _fixStuckAfter)
-        {
-            _currentStuck = 0;
-            SetRandomDestination();
-        }
-    }
-
-    private bool CheckIfInFront(Vector2 target)
-    {
-        float targetAngle = Mathf.Atan2(target.y - transform.position.y, target.x - transform.position.x) * Mathf.Rad2Deg +180;
-        float deltaAngleAIAndTarget = _gm.AngleDifference(targetAngle, transform.eulerAngles.x);
-        //Debug.Log($"{transform.eulerAngles.x} {targetAngle} = {deltaAngleAIAndTarget}");
-        if (deltaAngleAIAndTarget < _angleOfVision / 2 && deltaAngleAIAndTarget > -_angleOfVision / 2)
-        {
-            return true;
-        }
-        return false;
-    }
+    
     #endregion
 
-    #region Attack
 
     private void LoseTarget()
     {
@@ -173,7 +157,27 @@ public class Pirate : Spaceship
         _currentState = RoamState;
         _AttackOn.SetActive(false);
         _AttackOff.SetActive(true);
+        _agent.SetDestination(_gm.PirateFreighter.transform.position);
     }
 
-    #endregion
+    public bool IsAttacking()
+    {
+        return _currentState == AttackState;
+    }
+
+    public bool IsTargetable()
+    {
+        return !_untargetable;
+    }
+
+    public void StealMinerals(int minerals)
+    {
+        _stolenMinerals += minerals;
+    }
+
+    public override void Spawn()
+    {
+        base.Spawn();
+        _stolenMinerals = 0;
+    }
 }
