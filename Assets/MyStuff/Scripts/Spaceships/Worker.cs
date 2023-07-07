@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class Worker : Spaceship
 {
@@ -18,6 +19,10 @@ public class Worker : Spaceship
     [SerializeField] private GameObject _mineralOff;
     [SerializeField] private GameObject _mineralOn;
     [SerializeField] private GameObject _underAttack;
+
+    private SpriteRenderer _noteResource => _mineralOn.GetComponent<SpriteRenderer>();
+    private Sprite _noteSprite => _noteResource.sprite;
+    private Color _noteColor => _noteResource.color;
 
     private new void Start()
     {
@@ -79,6 +84,8 @@ public class Worker : Spaceship
         _agent.speed = _currentSpeed * 0.5f;
         _mineralOff.SetActive(false);
         _mineralOn.SetActive(true);
+        _gm.OP.SpawnFromPool("Note",transform.position,Quaternion.identity)
+            .GetComponent<Notification>().SetNotification($"+{_minerals} Minerals", _noteColor, _noteSprite);
     }
 
     private void SellMinerals()

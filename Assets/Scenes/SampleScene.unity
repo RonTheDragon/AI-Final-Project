@@ -610,6 +610,11 @@ MonoBehaviour:
     - Tag: Cop
       Prefab: {fileID: 8523339932323918097, guid: 2ab0b63585f8c5a4b856e0d9689c5bad, type: 3}
       Size: 20
+  - GroupName: UI
+    Pools:
+    - Tag: Note
+      Prefab: {fileID: 4704522413666487285, guid: a3038037b85b9d34a8482fc0d9beb70c, type: 3}
+      Size: 200
 --- !u!1 &461577679
 GameObject:
   m_ObjectHideFlags: 0
@@ -1448,7 +1453,7 @@ Transform:
   m_GameObject: {fileID: 1478423685}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.89, y: 1.05, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1261492823}
