@@ -20,6 +20,13 @@ public class GameManager : MonoBehaviour
     public int WorkersAmount;
     public int PiratesAmount;
 
+    public Sprite MineralIcon;
+    public Sprite SpeedIcon;
+    public Sprite MineIcon;
+    public Sprite CurrencyIcon;
+    public Sprite ArmorIcon;
+    public Sprite AttackIcon;
+
     private void Awake()
     {
         Instance = this;

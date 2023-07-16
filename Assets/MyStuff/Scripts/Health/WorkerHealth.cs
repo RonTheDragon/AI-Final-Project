@@ -36,7 +36,10 @@ public class WorkerHealth : SpaceshipHealth
         {
             if(Attacker.TryGetComponent<Pirate>(out Pirate p))
             {
-                p.StealMinerals(_worker.GetMinerals());
+                if (p.gameObject.activeSelf && _worker.GetMinerals()>0)
+                {
+                    p.StealMinerals(_worker.GetMinerals());
+                }
             }
             Death();
         }

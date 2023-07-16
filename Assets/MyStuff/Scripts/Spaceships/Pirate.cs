@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class Pirate : Spaceship
 {
@@ -28,7 +24,8 @@ public class Pirate : Spaceship
     [SerializeField] private GameObject _AttackOn;
     [SerializeField] private GameObject _AttackOff;
 
-
+    private int _attackLVL;
+    [SerializeField] private int _attackLvlEffect = 10;
 
 
     private new void Start()
@@ -100,11 +97,11 @@ public class Pirate : Spaceship
         }
         else if (Vector2.Distance(transform.position, _agent.destination) < 1)
         {
-            SetRandomDestination();
             if (Vector3.Distance(_agent.destination, _gm.PirateFreighter.position) < 0.5f)
             {
                 PirateShop();
             }
+            SetRandomDestination();
         }
     }
 
@@ -112,10 +109,32 @@ public class Pirate : Spaceship
     {
         _untargetable = true;
         _health.Heal();
-        _currency += _stolenMinerals * 40;
+        if (_stolenMinerals == 0) return;
+        int currencyAdded = _stolenMinerals * 40;
+        _currency += currencyAdded;
+        StartCoroutine(DisplayNote(0.0f, $"-{_stolenMinerals} Sold", Color.cyan, _gm.MineralIcon));
         _stolenMinerals = 0;
+        StartCoroutine(DisplayNote(0.2f, $"{_currency - currencyAdded}+{currencyAdded}={_currency}$", Color.yellow, _gm.CurrencyIcon));
 
+        if (_currency < _upgradePrice)
+            return;
 
+        _currency -= _upgradePrice;
+        StartCoroutine(DisplayNote(0.6f, $"{_currency + _upgradePrice}-{_upgradePrice}={_currency}$", Color.yellow, _gm.CurrencyIcon));
+        int chosenUpgrade = UnityEngine.Random.Range(0, 3);
+        switch (chosenUpgrade)
+        {
+            case 0: BuySpeed(); break;
+            case 1: BuyAttack(); break;
+            case 2: BuyArmor(); break;
+        }
+    }
+
+    private void BuyAttack()
+    {
+        _attackSystem.UpgradeDamage(_attackLVL*_attackLvlEffect);
+        _attackLVL++;
+        StartCoroutine(DisplayNote(0.4f, $"DamageUp! {_attackLVL - 1}>>{_attackLVL}", Color.red, _gm.AttackIcon));
     }
 
     protected override void Scan()
@@ -173,11 +192,13 @@ public class Pirate : Spaceship
     public void StealMinerals(int minerals)
     {
         _stolenMinerals += minerals;
+        StartCoroutine(DisplayNote(0.0f, $"+{minerals} Stolen", Color.cyan, _gm.MineralIcon));
     }
 
     public override void Spawn()
     {
         base.Spawn();
         _stolenMinerals = 0;
+        _attackLVL = 1;
     }
 }

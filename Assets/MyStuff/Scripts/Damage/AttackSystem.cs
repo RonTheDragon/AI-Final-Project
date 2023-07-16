@@ -9,6 +9,7 @@ public abstract class AttackSystem : MonoBehaviour
     [Header("Attacking")]
     [SerializeField] private string _currentAmmo = "PirateShot";
     [SerializeField] private float _attackDamage = 50;
+    private float _startAttackDamage = 50;
     [SerializeField] private float _shootCooldown = 1;
     private float _shootCD;
     [SerializeField] private LayerMask _attackableLayers;
@@ -16,6 +17,7 @@ public abstract class AttackSystem : MonoBehaviour
     protected void Start()
     {
         _gm = GameManager.Instance;
+        _startAttackDamage = _attackDamage;
     }
 
     public void ShootingTarget()
@@ -27,5 +29,16 @@ public abstract class AttackSystem : MonoBehaviour
         _shootCD = _shootCooldown;
         _gm.OP.SpawnFromPool(_currentAmmo, transform.position, transform.rotation, true)
             .GetComponent<ProjectileDamage>().SetDamage(_attackDamage, transform, _attackableLayers);
+    }
+
+    public void ResetAttackDamage()
+    {
+        if (_startAttackDamage == 0) return;
+        _attackDamage = _startAttackDamage;
+    }
+
+    public void UpgradeDamage(float damage)
+    {
+        _attackDamage = _startAttackDamage + damage;
     }
 }

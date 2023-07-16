@@ -702,6 +702,12 @@ MonoBehaviour:
   PoliceStation: {fileID: 1104663669}
   WorkersAmount: 20
   PiratesAmount: 10
+  MineralIcon: {fileID: 21300000, guid: d0e15e1cfa8331244994baa9def5bb9b, type: 3}
+  SpeedIcon: {fileID: 21300000, guid: 842dae4d1d74c00418513a5747fd1d4d, type: 3}
+  MineIcon: {fileID: 21300000, guid: ea0b23a159c2d484890e0c5dbcecbecf, type: 3}
+  CurrencyIcon: {fileID: 21300000, guid: ceef3a14f33c650468492dae7ce6afc3, type: 3}
+  ArmorIcon: {fileID: 21300000, guid: 5f588e0d6adf6d84dbb218ceefd7dfdf, type: 3}
+  AttackIcon: {fileID: 21300000, guid: 506e9b64e70751b47bc975ef19247dcc, type: 3}
 --- !u!1 &501725459
 GameObject:
   m_ObjectHideFlags: 0

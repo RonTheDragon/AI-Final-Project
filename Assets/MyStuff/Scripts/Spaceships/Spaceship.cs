@@ -26,6 +26,8 @@ public abstract class Spaceship : MonoBehaviour
 
     [SerializeField] protected float _fixStuckAfter = 1;
 
+    [SerializeField] protected int _upgradePrice = 200;
+
     protected float _currentStuck;
 
     protected int _currency;
@@ -36,6 +38,7 @@ public abstract class Spaceship : MonoBehaviour
     protected float _accelerationSpeed;
     protected float _rotationSpeed;
     protected int _speedLVL;
+    protected int _armorLVL;
 
     // Start is called before the first frame update
     protected void Start()
@@ -192,6 +195,7 @@ public abstract class Spaceship : MonoBehaviour
     protected void BuySpeed()
     {
         _speedLVL++;
+        StartCoroutine(DisplayNote(0.4f, $"SpeedUp! {_speedLVL-1}>>{_speedLVL}", Color.green, _gm.SpeedIcon));
         _currentSpeed = _startingSpeed * (1 + _speedLVL * 0.001f);
         _accelerationSpeed = _startingAccel * (1 + _speedLVL * 0.01f);
         _rotationSpeed = _startingRot * (1 + _speedLVL * 0.1f);
@@ -201,10 +205,18 @@ public abstract class Spaceship : MonoBehaviour
         _agent.speed = _currentSpeed;
     }
 
+    protected void BuyArmor()
+    {
+        _health.UpgradeMaxHealth(_armorLVL);
+        _armorLVL++;
+        StartCoroutine(DisplayNote(0.4f, $"ArmorUp! {_armorLVL - 1}>>{_armorLVL}", Color.white, _gm.ArmorIcon));
+    }
+
     public virtual void Spawn()
     {
         _currency = 0;
         _speedLVL = 1;
+        _armorLVL = 1;
         if (_startingSpeed > 0)
         {
             _currentSpeed = _startingSpeed;
@@ -214,5 +226,12 @@ public abstract class Spaceship : MonoBehaviour
             _agent.angularSpeed = _rotationSpeed;
             _agent.acceleration = _accelerationSpeed;
         }
+    }
+
+    protected System.Collections.IEnumerator DisplayNote(float delay,string text,Color color,Sprite sprite)
+    {
+        yield return new WaitForSeconds(delay);
+        _gm.OP.SpawnFromPool("Note", transform.position, Quaternion.identity)
+            .GetComponent<Notification>().SetNotification(text, color, sprite);
     }
 }

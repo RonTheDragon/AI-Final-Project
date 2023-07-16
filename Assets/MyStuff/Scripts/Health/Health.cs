@@ -8,6 +8,7 @@ public abstract class Health : MonoBehaviour
     protected bool _isAlive = true;
     [SerializeField] protected float _maxHealth;
     [SerializeField] protected float _currentHealth;
+    protected float _startMaxHealth;
     protected GameManager _gm;
     public Action<Transform> OnTakeDamage;
 
@@ -15,12 +16,17 @@ public abstract class Health : MonoBehaviour
     protected virtual void Start()
     {
         _gm = GameManager.Instance;
+        _startMaxHealth = _maxHealth;
         Spawn();
     }
 
     public virtual void Spawn()
     {
         _isAlive = true;
+        if (_startMaxHealth != 0)
+        {
+            _maxHealth = _startMaxHealth;
+        }
         _currentHealth = _maxHealth;
     }
 

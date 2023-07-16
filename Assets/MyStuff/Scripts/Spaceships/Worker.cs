@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -22,7 +23,9 @@ public class Worker : Spaceship
 
     private SpriteRenderer _noteResource => _mineralOn.GetComponent<SpriteRenderer>();
     private Sprite _noteSprite => _noteResource.sprite;
-    private Color _noteColor => _noteResource.color;
+
+    private int _miningLVL;
+    [SerializeField] private int _miningLvlEffect=2;
 
     private new void Start()
     {
@@ -79,18 +82,21 @@ public class Worker : Spaceship
 
     private void MineMinerals()
     {
-        _minerals = (int)UnityEngine.Random.Range(_gm.MineralsExtraction.x, _gm.MineralsExtraction.y);
+        _minerals = (int)UnityEngine.Random.Range(_gm.MineralsExtraction.x+(_miningLVL-1* _miningLvlEffect),
+            _gm.MineralsExtraction.y + (_miningLVL - 1 * _miningLvlEffect));
         _agent.SetDestination(_gm.Factory.position);
         _agent.speed = _currentSpeed * 0.5f;
         _mineralOff.SetActive(false);
         _mineralOn.SetActive(true);
-        _gm.OP.SpawnFromPool("Note",transform.position,Quaternion.identity)
-            .GetComponent<Notification>().SetNotification($"+{_minerals} Minerals", _noteColor, _noteSprite);
+        StartCoroutine(DisplayNote(0.0f, $"+{_minerals} Mined", Color.cyan, _gm.MineralIcon));
     }
 
     private void SellMinerals()
     {
-        _currency += _minerals * 40;
+        int currencyAdded = _minerals * 40;
+        _currency += currencyAdded;
+        StartCoroutine(DisplayNote(0.0f, $"-{_minerals} Sold", Color.cyan, _gm.MineralIcon));
+        StartCoroutine(DisplayNote(0.2f, $"{_currency-currencyAdded}+{currencyAdded}={_currency}$",Color.yellow,_gm.CurrencyIcon));
         _minerals = 0;
         WorkerShop();
         _agent.speed = _currentSpeed;
@@ -102,10 +108,28 @@ public class Worker : Spaceship
     private void WorkerShop()
     {
         _health.Heal();
-        BuySpeed();
+        if (_currency < _upgradePrice) 
+            return;
+
+        _currency-= _upgradePrice;
+        StartCoroutine(DisplayNote(0.6f, $"{_currency + _upgradePrice}-{_upgradePrice}={_currency}$", Color.yellow, _gm.CurrencyIcon));
+        int chosenUpgrade = UnityEngine.Random.Range(0, 3);
+        switch (chosenUpgrade)
+        {
+            case 0: BuySpeed(); break; 
+            case 1: BuyMining(); break;
+            case 2: BuyArmor(); break;
+        }
     }
 
-    
+    private void BuyMining()
+    {
+        _miningLVL++;
+        StartCoroutine(DisplayNote(0.4f, $"MineUp! {_miningLVL - 1}>>{_miningLVL}", Color.blue, _gm.MineIcon));
+        
+    }
+
+
 
     public void Panic(Transform attacker)
     {
@@ -132,12 +156,24 @@ public class Worker : Spaceship
         _attacker = null;
         _underAttack.SetActive(false);
         _currentState = WorkState;
+
+        if (_gm == null) return;
+
+        if (_minerals > 0)
+        {
+            _agent.SetDestination(_gm.Factory.position);
+        }
+        else
+        {
+            _agent.SetDestination(_gm.Mine.position);
+        }
     }
 
     public override void Spawn()
     {
         base.Spawn();
-        StopPanic(); 
+        StopPanic();
+        _miningLVL = 1;
         _gm = GameManager.Instance;
         _minerals = 0;
         _agent.SetDestination(_gm.Mine.position);
